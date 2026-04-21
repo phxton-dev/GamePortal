@@ -13,14 +13,6 @@ A personality quiz that determines which Minecraft PvP kit you are based on your
 ### 3. Blackjack
 A casino card game where you try to profit by playing Blackjack. Start with $1000 and manage your bets strategically to maximize your winnings. High scores track your best profit.
 
-## How to Run
-
-Compile and run the Game Portal:
-```bash
-javac -d bin src/*.java src/game/*.java src/cards/*.java src/Quiz/*.java
-java -cp bin GamePortal
-```
-
 ## High Scores
 
 The Game Portal automatically tracks high scores for each game in `Highscore.csv`:

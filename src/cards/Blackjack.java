@@ -1,4 +1,5 @@
 
+package cards;
 
 public class Blackjack extends CardGame {
     static String[] suits = { "Hearts", "Diamonds", "Clubs", "Spades" };

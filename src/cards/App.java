@@ -1,14 +1,19 @@
+package cards;
+
 import processing.core.PApplet;
 import processing.core.PFont;
+import java.util.concurrent.CountDownLatch;
 
 public class App extends PApplet {
 
     CardGame cardGame = new Blackjack();
     private int timer;
     private PFont font;
+    private CountDownLatch gameLatch;
+    private boolean gameEnded = false;
 
-    public static void main(String[] args) {
-        PApplet.main("App");
+    public void setGameLatch(CountDownLatch latch) {
+        this.gameLatch = latch;
     }
     @Override
     public void settings() {
@@ -17,7 +22,7 @@ public class App extends PApplet {
 
     @Override
     public void setup() {
-        font = createFont("font.ttf", 32);
+        font = createFont("src/cards/font.ttf", 32);
         textFont(font);
     }
 
@@ -173,6 +178,14 @@ public class App extends PApplet {
             if(cardGame.playerOneHand.getSize() == 2){
                 cardGame.handleDoubleDownClick(mouseX, mouseY);
             }
+        }
+    }
+
+    @Override
+    public void exitActual() {
+        if (gameLatch != null && !gameEnded) {
+            gameEnded = true;
+            gameLatch.countDown();
         }
     }
 

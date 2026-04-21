@@ -1,4 +1,6 @@
 
+package Quiz;
+
 /*
  * Irene Feng Nov 2022
  * This is the class where we create the Quiz and run it. It has the main method.  
@@ -6,12 +8,30 @@
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
-public class Quiz {
+import java.io.File;
+import Game.GameWriteable;
+
+public class Quiz implements GameWriteable {
         static Scanner sc = new Scanner(System.in);
         // HashMap to track category popularity across multiple games
         static HashMap<String, Integer> categoryPopularity = new HashMap<>();
+        private String resultCategory;
         
-        public static void main(String[] args) throws Exception {
+        public Quiz() {
+                this.resultCategory = "None";
+        }
+
+        @Override
+        public String getGameName() {
+                return "BuzzFeed Quiz";
+        }
+
+        @Override
+        public void play() {
+                playQuiz();
+        }
+
+        private void playQuiz() {
                 // Create Categories
                 Category Vanilla = new Category("Vanilla",
                                 "You have fast hands and no patience. You enjoy high risk, high reward and you speed through everything.");
@@ -62,7 +82,6 @@ public class Quiz {
                 q8.possibleAnswers[2] = new Answer("Mix different techniques and see what fits", SMP);
                 
                 // For each question, ask, read input, store answer.
-                gameIntro();
                 Question[] qList = { q1, q2, q3, q4, q5, q6, q7, q8 };
                 for (Question q : qList) {
                         Category c = q.ask(sc);
@@ -73,7 +92,7 @@ public class Quiz {
                 int index = getMostPopularCatIndex(cList);
                 System.out.println("If you were a Minecraft PVP kit, you would be: " + cList[index].label + ". ");
                 System.out.println(cList[index].description);
-                String resultCategory = cList[index].label;
+                resultCategory = cList[index].label;
                 updateCategoryPopularity(resultCategory);
                 System.out.println("\nWould you like to play again? (1 = Yes, 2 = No)");
                 int playAgain = sc.nextInt();
@@ -81,11 +100,7 @@ public class Quiz {
                         for (Category c : cList) {
                                 c.points = 0;
                         }
-                        main(args);
-                } else {
-                        displayCategoryPopularity();
-                        System.out.println("\nThanks for playing!");
-                        sc.close();
+                        playQuiz();
                 }
 
         }
@@ -136,5 +151,44 @@ public class Quiz {
                 if (!mostPopular.isEmpty()) {
                         System.out.println("\nMost Popular Category Overall: " + mostPopular + " (" + maxCount + " times)");
                 }
+        }
+
+        @Override
+        public String getScore() {
+                String mostPopular = getMostPopularCategory();
+                int count = categoryPopularity.getOrDefault(mostPopular, 0);
+                return mostPopular + ": " + count;
+        }
+
+        private String getMostPopularCategory() {
+                String mostPopular = "None";
+                int maxCount = 0;
+                for (Map.Entry<String, Integer> entry : categoryPopularity.entrySet()) {
+                        if (entry.getValue() > maxCount) {
+                                maxCount = entry.getValue();
+                                mostPopular = entry.getKey();
+                        }
+                }
+                return mostPopular;
+        }
+
+        @Override
+        public boolean isHighScore(String score, String currentHighScore) {
+                if (currentHighScore == null) {
+                        return true;
+                }
+                
+                try {
+                        int currentCount = Integer.parseInt(score.split(": ")[1]);
+                        int highScoreCount = Integer.parseInt(currentHighScore.split(": ")[1]);
+                        return currentCount > highScoreCount;
+                } catch (Exception e) {
+                        return false;
+                }
+        }
+
+        @Override
+        public void writeHighScore(File f) {
+                GameWriteable.super.writeHighScore(f);
         }
 }

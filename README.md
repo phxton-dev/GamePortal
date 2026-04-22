@@ -2,6 +2,9 @@
 
 GamePortal is a collection of games and programs that allows users to run multiple interactive applications from a single entry point.
 
+## Dependencies
+To run the GamePortal, you need the Processing `core.jar` in your `lib` folder. 
+
 ## Games Available
 
 ### 1. ASCII Art
